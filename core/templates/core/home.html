@@ -1,0 +1,51 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Welcome — TaskHive{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+  <div>
+    <h1 class="text-4xl md:text-5xl font-extrabold text-slate-800 leading-tight">
+      Organize. Track. Achieve.
+    </h1>
+    <p class="mt-4 text-lg text-slate-600">
+      TaskHive helps you manage tasks, track goals, set reminders, and visualize progress — all in one elegant workspace.
+    </p>
+
+    <div class="mt-6 flex space-x-3">
+      <a href="{% url 'users:register' %}" class="px-5 py-3 rounded bg-indigo-600 text-white shadow hover:bg-indigo-700">Get Started</a>
+      <a href="{% url 'users:login' %}" class="px-5 py-3 rounded border border-slate-200 text-slate-700 hover:bg-slate-50">Sign in</a>
+      
+    </div>
+
+    <div class="mt-8 flex space-x-6 text-sm text-slate-500">
+      <div><strong class="text-slate-700">Tasks</strong> • Create & organize</div>
+      <div><strong class="text-slate-700">Goals</strong> • Track progress</div>
+      <div><strong class="text-slate-700">Calendar</strong> • Deadlines & reminders</div>
+    </div>
+  </div>
+
+  <div>
+    <!-- simple mockup card -->
+    <div class="bg-white rounded-lg shadow p-6">
+      <h3 class="font-semibold text-slate-700">Today</h3>
+      <ul class="mt-4 space-y-3">
+        <li class="flex items-start justify-between">
+          <div>
+            <div class="text-slate-800 font-medium">Finish project README</div>
+            <div class="text-xs text-slate-500">Due today • High priority</div>
+          </div>
+          <div class="text-sm text-green-600 font-semibold">In Progress</div>
+        </li>
+        <li class="flex items-start justify-between">
+          <div>
+            <div class="text-slate-800 font-medium">Study algorithms</div>
+            <div class="text-xs text-slate-500">Due tomorrow • Medium</div>
+          </div>
+          <div class="text-sm text-slate-500">Todo</div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}

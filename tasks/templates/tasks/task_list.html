@@ -1,0 +1,65 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Tasks | TaskHive{% endblock %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-4">
+    <h2 class="text-2xl font-bold">Tasks</h2>
+    <a href="{% url 'tasks:task_create' %}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">+ Add Task</a>
+</div>
+
+<!-- Filters -->
+<form method="GET" class="flex flex-wrap gap-2 mb-4">
+    <select name="status" class="border rounded px-2 py-1">
+        <option value="">All Status</option>
+        <option value="In Progress" {% if request.GET.status == "In Progress" %}selected{% endif %}>In Progress</option>
+        <option value="Completed" {% if request.GET.status == "Completed" %}selected{% endif %}>Completed</option>
+    </select>
+    <select name="priority" class="border rounded px-2 py-1">
+        <option value="">All Priority</option>
+        <option value="Low" {% if request.GET.priority == "Low" %}selected{% endif %}>Low</option>
+        <option value="Medium" {% if request.GET.priority == "Medium" %}selected{% endif %}>Medium</option>
+        <option value="High" {% if request.GET.priority == "High" %}selected{% endif %}>High</option>
+    </select>
+    <button type="submit" class="bg-gray-200 px-3 rounded hover:bg-gray-300">Filter</button>
+</form>
+
+<table class="w-full bg-white rounded shadow overflow-hidden">
+    <thead class="bg-gray-100">
+        <tr>
+            <th class="p-2 text-left">Title</th>
+            <th class="p-2 text-left">Priority</th>
+            <th class="p-2 text-left">Status</th>
+            <th class="p-2 text-left">Due</th>
+            <th class="p-2 text-left">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for task in tasks %}
+        <tr class="border-b">
+            <td class="p-2">{{ task.title }}</td>
+            <td class="p-2">{{ task.priority }}</td>
+            <td class="p-2">
+                {% if task.status == 'Completed' %}
+                    <a href="{% url 'tasks:toggle_status' task.pk %}" class="px-2 py-1 rounded bg-green-200 text-green-800">
+                        {{ task.status }}
+                    </a>
+                {% else %}
+                    <a href="{% url 'tasks:toggle_status' task.pk %}" class="px-2 py-1 rounded bg-yellow-200 text-yellow-800">
+                        {{ task.status }}
+                    </a>
+                {% endif %}
+            </td>
+            <td class="p-2">{{ task.due_date }}</td>
+            <td class="p-2 space-x-2">
+                <a href="{% url 'tasks:task_update' task.pk %}" class="text-blue-600 hover:underline">Edit</a>
+                <a href="{% url 'tasks:task_delete' task.pk %}" class="text-red-600 hover:underline">Delete</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5" class="p-2 text-center text-gray-500">No tasks found</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

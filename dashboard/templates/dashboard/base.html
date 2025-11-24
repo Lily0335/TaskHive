@@ -1,0 +1,122 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Dashboard | TaskHive{% endblock %}</title>
+
+  <!-- Tailwind CSS CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.0/dist/tailwind.min.css" rel="stylesheet">
+
+  <script>
+    function toggleSidebar() {
+      document.getElementById("sidebar").classList.toggle("-translate-x-full");
+    }
+  </script>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{% static 'css/site.css' %}">
+</head>
+<body class="bg-gray-100 font-sans">
+
+  <!-- NAVBAR -->
+  <nav class="bg-white shadow fixed top-0 left-0 w-full z-10">
+    <div class="flex justify-between items-center px-6 py-3">
+
+      <!-- Mobile toggle button -->
+      <button onclick="toggleSidebar()" class="md:hidden text-gray-700 text-2xl">
+        ☰
+      </button>
+
+      <!-- Brand -->
+      <h1 class="text-2xl font-bold text-blue-600">TaskHive</h1>
+
+      <!-- Right actions -->
+      <div class="flex items-center space-x-4">
+        <a href="#" class="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded shadow font-medium">
+          Premium
+        </a>
+        <a href="{% url 'users:logout' %}" 
+           class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded shadow font-semibold">
+           Logout
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- SIDEBAR -->
+  <div id="sidebar"
+       class="fixed top-0 left-0 mt-16 w-64 bg-white h-full shadow transform -translate-x-full md:translate-x-0 transition duration-300">
+
+    <ul class="p-6 space-y-3">
+      <li>
+        <a href="{% url 'dashboard:home' %}"
+           class="block p-3 rounded hover:bg-blue-100 font-medium flex items-center space-x-2">
+           <span>🏠</span><span>Dashboard</span>
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'tasks:task_list' %}"
+           class="block p-3 rounded hover:bg-blue-100 font-medium flex items-center space-x-2">
+           <span>📝</span><span>Tasks</span>
+        </a>
+      </li>
+      <li>
+        <a href="#goals"
+           class="block p-3 rounded hover:bg-blue-100 font-medium flex items-center space-x-2">
+           <span>🎯</span><span>Goals</span>
+        </a>
+      </li>
+      <li>
+        <a href="#notes"
+           class="block p-3 rounded hover:bg-blue-100 font-medium flex items-center space-x-2">
+           <span>📌</span><span>Notes</span>
+        </a>
+      </li>
+      <li>
+        <a href="#calendar"
+           class="block p-3 rounded hover:bg-blue-100 font-medium flex items-center space-x-2">
+           <span>📅</span><span>Calendar</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="pt-20 pl-0 md:pl-64 p-6 min-h-screen">
+
+    {% block content %}
+    <!-- Example: Dashboard Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="bg-white shadow rounded-lg p-5">
+        <h3 class="text-gray-500 font-medium mb-2">Pending Tasks</h3>
+        <p class="text-2xl font-bold text-gray-800">12</p>
+      </div>
+      <div class="bg-white shadow rounded-lg p-5">
+        <h3 class="text-gray-500 font-medium mb-2">Completed Tasks</h3>
+        <p class="text-2xl font-bold text-green-600">35</p>
+      </div>
+      <div class="bg-white shadow rounded-lg p-5">
+        <h3 class="text-gray-500 font-medium mb-2">Goals Achieved</h3>
+        <p class="text-2xl font-bold text-blue-600">8 / 10</p>
+      </div>
+    </div>
+
+    <!-- Example: Progress Chart -->
+    <div class="mt-8 bg-white shadow rounded-lg p-6">
+      <h3 class="text-gray-700 font-bold mb-4">Task Completion Progress</h3>
+      <div class="w-full bg-gray-200 rounded-full h-4">
+        <div class="bg-blue-600 h-4 rounded-full" style="width: 70%;"></div>
+      </div>
+    </div>
+    {% endblock %}
+
+  </div>
+
+</body>
+</html>

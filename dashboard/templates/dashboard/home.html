@@ -1,0 +1,26 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Dashboard | TaskHive{% endblock %}
+
+{% block content %}
+<h2 class="text-3xl font-bold mb-6">Welcome, {{ request.user.username }} 👋</h2>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+  <div class="bg-white p-6 rounded shadow">
+    <h3 class="text-xl font-semibold">Total Tasks</h3>
+    <p class="text-3xl font-bold text-blue-600 mt-2">0</p>
+  </div>
+
+  <div class="bg-white p-6 rounded shadow">
+    <h3 class="text-xl font-semibold">Goals Progress</h3>
+    <p class="text-3xl font-bold text-green-600 mt-2">0%</p>
+  </div>
+
+  <div class="bg-white p-6 rounded shadow">
+    <h3 class="text-xl font-semibold">Notes</h3>
+    <p class="text-3xl font-bold text-purple-600 mt-2">0</p>
+  </div>
+
+</div>
+
+{% endblock %}
