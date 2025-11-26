@@ -7,113 +7,203 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{% block title %}Dashboard | TaskHive{% endblock %}</title>
 
-  <!-- Tailwind CSS CDN -->
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.0/dist/tailwind.min.css" rel="stylesheet">
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
+  <link rel="stylesheet" href="{% static 'css/site.css' %}">
+  
   <script>
     function toggleSidebar() {
       document.getElementById("sidebar").classList.toggle("-translate-x-full");
     }
   </script>
 
-  <!-- Tailwind CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Custom CSS -->
-  <link rel="stylesheet" href="{% static 'css/site.css' %}">
+  <style>
+    .active-link {
+      background: rgba(59,130,246,0.15);
+      border-left: 4px solid #3b82f6;
+      color: #3b82f6 !important;
+      font-weight: 600;
+    }
+  </style>
 </head>
+
 <body class="bg-gray-100 font-sans">
 
   <!-- NAVBAR -->
-  <nav class="bg-white shadow fixed top-0 left-0 w-full z-10">
+  <nav class="bg-white shadow fixed top-0 left-0 w-full z-20">
     <div class="flex justify-between items-center px-6 py-3">
 
-      <!-- Mobile toggle button -->
+      <!-- Mobile Menu Button -->
       <button onclick="toggleSidebar()" class="md:hidden text-gray-700 text-2xl">
         ☰
       </button>
 
       <!-- Brand -->
-      <h1 class="text-2xl font-bold text-blue-600">TaskHive</h1>
+      <h1 class="text-2xl font-extrabold text-blue-600 tracking-wide">
+        TaskHive
+      </h1>
 
-      <!-- Right actions -->
+      <!-- Right Buttons -->
       <div class="flex items-center space-x-4">
         <a href="#" class="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded shadow font-medium">
           Premium
         </a>
-        <a href="{% url 'users:logout' %}" 
+
+        <a href="{% url 'users:logout' %}"
            class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded shadow font-semibold">
-           Logout
+          Logout
         </a>
       </div>
     </div>
   </nav>
 
-  <!-- SIDEBAR -->
+  <!-- SIDEBAR (Dark + Neon Highlights) -->
   <div id="sidebar"
-       class="fixed top-0 left-0 mt-16 w-64 bg-white h-full shadow transform -translate-x-full md:translate-x-0 transition duration-300">
+       class="fixed top-0 left-0 mt-16 w-64 h-full bg-gray-900 text-gray-200 shadow-xl 
+              transform -translate-x-full md:translate-x-0 transition duration-300 z-30
+              overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-800">
 
-    <ul class="p-6 space-y-3">
-      <li>
-        <a href="{% url 'dashboard:home' %}"
-           class="block p-3 rounded hover:bg-blue-100 font-medium flex items-center space-x-2">
-           <span>🏠</span><span>Dashboard</span>
-        </a>
-      </li>
-      <li>
-        <a href="{% url 'tasks:task_list' %}"
-           class="block p-3 rounded hover:bg-blue-100 font-medium flex items-center space-x-2">
-           <span>📝</span><span>Tasks</span>
-        </a>
-      </li>
-      <li>
-        <a href="#goals"
-           class="block p-3 rounded hover:bg-blue-100 font-medium flex items-center space-x-2">
-           <span>🎯</span><span>Goals</span>
-        </a>
-      </li>
-      <li>
-        <a href="#notes"
-           class="block p-3 rounded hover:bg-blue-100 font-medium flex items-center space-x-2">
-           <span>📌</span><span>Notes</span>
-        </a>
-      </li>
-      <li>
-        <a href="#calendar"
-           class="block p-3 rounded hover:bg-blue-100 font-medium flex items-center space-x-2">
-           <span>📅</span><span>Calendar</span>
-        </a>
-      </li>
-    </ul>
+
+    <ul class="p-6 space-y-2 text-sm">
+
+  <!-- DASHBOARD -->
+  <li>
+    <a href="{% url 'dashboard:home' %}"
+       class="sidebar-link block p-3 rounded hover:bg-gray-800 flex items-center space-x-3">
+       <span class="text-blue-400 text-lg">🏠</span>
+       <span>Dashboard</span>
+    </a>
+  </li>
+
+  <!-- STUDY HOURS -->
+  <li>
+    <a href="/studytracker/"
+       class="sidebar-link block p-3 rounded hover:bg-gray-800 flex items-center space-x-3">
+       <span class="text-emerald-400 text-lg">📘</span>
+       <span>Study Hours</span>
+       <span class="ml-auto bg-emerald-600 text-xs px-2 py-0.5 rounded-full text-white">NEW</span>
+    </a>
+  </li>
+
+  <!-- TASKS -->
+  <li>
+    <a href="{% url 'tasks:task_list' %}"
+       class="sidebar-link block p-3 rounded hover:bg-gray-800 flex items-center space-x-3">
+       <span class="text-yellow-300 text-lg">📝</span>
+       <span>Tasks</span>
+       <span class="ml-auto bg-red-600 text-xs px-2 py-0.5 rounded-full text-white">
+         {{ pending_tasks|default:0 }}
+       </span>
+    </a>
+  </li>
+
+  <!-- NOTES -->
+  <li>
+    <a href="#notes"
+       class="sidebar-link block p-3 rounded hover:bg-gray-800 flex items-center space-x-3">
+       <span class="text-pink-400 text-lg">📌</span>
+       <span>Notes</span>
+       <span class="ml-auto bg-blue-500 text-xs px-2 py-0.5 rounded-full text-white">
+         {{ notes_count|default:0 }}
+       </span>
+    </a>
+  </li>
+
+  <!-- CALENDAR -->
+  <li>
+    <a href="{% url 'calendarapp:calendar' %}"
+       class="sidebar-link block p-3 rounded hover:bg-gray-800 flex items-center space-x-3">
+       <span class="text-purple-400 text-lg">📅</span>
+       <span>Calendar</span>
+    </a>
+  </li>
+
+  <!-- GOALS -->
+  <li>
+    <a href="#goals"
+       class="sidebar-link block p-3 rounded hover:bg-gray-800 flex items-center space-x-3">
+       <span class="text-cyan-400 text-lg">🎯</span>
+       <span>Goals</span>
+    </a>
+  </li>
+
+  <!-- ANALYTICS -->
+  <li>
+    <a href="#analytics"
+       class="sidebar-link block p-3 rounded hover:bg-gray-800 flex items-center space-x-3">
+       <span class="text-indigo-400 text-lg">📊</span>
+       <span>Analytics</span>
+    </a>
+  </li>
+
+
+
+  <!-- ------------------------------- -->
+  <!-- CATEGORY SECTION (New UI)       -->
+  <!-- ------------------------------- -->
+
+  <div class="mt-6 text-xs text-gray-400 uppercase tracking-wide">Category</div>
+
+  <ul class="mt-3 space-y-2">
+    <li class="flex items-center gap-3 p-2 rounded hover:bg-gray-800">
+      <span class="w-3 h-3 rounded-full bg-red-500"></span>
+      <span>Personal</span>
+      <span class="ml-auto bg-gray-700 px-2 text-xs rounded">4</span>
+    </li>
+
+    <li class="flex items-center gap-3 p-2 rounded hover:bg-gray-800">
+      <span class="w-3 h-3 rounded-full bg-blue-500"></span>
+      <span>Work</span>
+      <span class="ml-auto bg-gray-700 px-2 text-xs rounded">1</span>
+    </li>
+
+    <li class="flex items-center gap-3 p-2 rounded hover:bg-gray-800">
+      <span class="w-3 h-3 rounded-full bg-yellow-400"></span>
+      <span>Others</span>
+      <span class="ml-auto bg-gray-700 px-2 text-xs rounded">1</span>
+    </li>
+  </ul>
+
+
+
+  <!-- ------------------------------- -->
+  <!-- TAGS SECTION (New UI)           -->
+  <!-- ------------------------------- -->
+
+  <div class="mt-6 text-xs text-gray-400 uppercase tracking-wide">Tags</div>
+
+  <div class="mt-3 flex flex-wrap gap-2">
+    <span class="px-3 py-1 rounded-full text-xs font-semibold bg-blue-600 text-white">School</span>
+    <span class="px-3 py-1 rounded-full text-xs font-semibold bg-purple-600 text-white">Coding</span>
+    <span class="px-3 py-1 rounded-full text-xs font-semibold bg-yellow-600 text-white">Python</span>
+  </div>
+
+  <!-- Add tag -->
+  <div class="mt-3 flex items-center gap-2">
+    <input type="text" placeholder="New tag name"
+           class="w-full px-2 py-1 text-sm rounded bg-gray-800 text-gray-200 border border-gray-700 focus:outline-none">
+    <button class="px-3 py-1 rounded bg-gray-700 text-lg">+</button>
+  </div>
+
+
+
+  <!-- SIGN OUT -->
+  <li class="mt-6 pt-4 border-t border-gray-700">
+    <a href="{% url 'users:logout' %}"
+       class="flex items-center gap-3 text-gray-300 hover:text-white p-2 rounded">
+       <span class="text-xl">↩</span>
+       <span>Sign out</span>
+    </a>
+  </li>
+
+</ul>
   </div>
 
   <!-- MAIN CONTENT -->
   <div class="pt-20 pl-0 md:pl-64 p-6 min-h-screen">
 
     {% block content %}
-    <!-- Example: Dashboard Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div class="bg-white shadow rounded-lg p-5">
-        <h3 class="text-gray-500 font-medium mb-2">Pending Tasks</h3>
-        <p class="text-2xl font-bold text-gray-800">12</p>
-      </div>
-      <div class="bg-white shadow rounded-lg p-5">
-        <h3 class="text-gray-500 font-medium mb-2">Completed Tasks</h3>
-        <p class="text-2xl font-bold text-green-600">35</p>
-      </div>
-      <div class="bg-white shadow rounded-lg p-5">
-        <h3 class="text-gray-500 font-medium mb-2">Goals Achieved</h3>
-        <p class="text-2xl font-bold text-blue-600">8 / 10</p>
-      </div>
-    </div>
-
-    <!-- Example: Progress Chart -->
-    <div class="mt-8 bg-white shadow rounded-lg p-6">
-      <h3 class="text-gray-700 font-bold mb-4">Task Completion Progress</h3>
-      <div class="w-full bg-gray-200 rounded-full h-4">
-        <div class="bg-blue-600 h-4 rounded-full" style="width: 70%;"></div>
-      </div>
-    </div>
     {% endblock %}
 
   </div>

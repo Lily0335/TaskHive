@@ -11,6 +11,13 @@ urlpatterns = [
     path('users/', include('users.urls')), 
     path('dashboard/', include('dashboard.urls')),
     path('tasks/', include('tasks.urls')),
+    path("studytracker/", include("studytracker.urls")),
+    path("calendar/", include("calendarapp.urls")),
+
+
+
+
+
 
  
 

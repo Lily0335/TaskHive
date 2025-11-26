@@ -1,0 +1,20 @@
+{% extends "dashboard/base.html" %}
+{% block content %}
+
+<div class="max-w-md mx-auto bg-white shadow p-6 rounded">
+    <h2 class="text-xl font-bold mb-4 text-red-600">
+        Delete Study Session?
+    </h2>
+
+    <p>Are you sure you want to delete the study session on {{ session.date }}?</p>
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="mt-4 flex gap-2">
+            <button class="bg-red-600 text-white px-4 py-2 rounded">Delete</button>
+            <a href="{% url 'studytracker:list' %}" class="px-4 py-2 bg-gray-300 rounded">Cancel</a>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

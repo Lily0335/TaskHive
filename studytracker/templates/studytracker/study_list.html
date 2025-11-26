@@ -1,0 +1,40 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Study Hours{% endblock %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-4">
+    <h2 class="text-2xl font-bold text-gray-800">Study Hours</h2>
+    <a href="{% url 'studytracker:add' %}" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+        + Add Study Hours
+    </a>
+</div>
+
+<div class="bg-white shadow rounded-lg p-4">
+    <table class="w-full text-left">
+        <thead>
+            <tr class="border-b">
+                <th class="p-3">Date</th>
+                <th class="p-3">Hours</th>
+                <th class="p-3">Note</th>
+                <th class="p-3">Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for s in sessions %}
+            <tr class="border-b hover:bg-gray-100">
+                <td class="p-3">{{ s.date }}</td>
+                <td class="p-3">{{ s.hours }}</td>
+                <td class="p-3">{{ s.note|default:"—" }}</td>
+                <td class="p-3 flex gap-2">
+                    <a href="{% url 'studytracker:edit' s.id %}" class="text-blue-500">Edit</a>
+                    <a href="{% url 'studytracker:delete' s.id %}" class="text-red-500">Delete</a>
+                </td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="4" class="text-center p-4 text-gray-500">No study sessions added yet.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

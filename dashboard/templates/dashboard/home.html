@@ -4,23 +4,71 @@
 {% block content %}
 <h2 class="text-3xl font-bold mb-6">Welcome, {{ request.user.username }} 👋</h2>
 
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-  <div class="bg-white p-6 rounded shadow">
-    <h3 class="text-xl font-semibold">Total Tasks</h3>
-    <p class="text-3xl font-bold text-blue-600 mt-2">0</p>
+ <!-- DASHBOARD PREMIUM STATS -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-8">
+
+  <!-- Overdue Tasks -->
+  <div class="group bg-white/70 backdrop-blur-xl rounded-2xl shadow-md border border-gray-200 
+              p-6 hover:shadow-xl hover:scale-[1.02] transition-all duration-300 cursor-pointer">
+    
+    <div class="flex items-center justify-between">
+      <h3 class="text-sm font-semibold text-gray-500 tracking-wide">Overdue Tasks</h3>
+
+      <!-- ICON -->
+      <div class="w-10 h-10 flex items-center justify-center bg-red-100 rounded-xl
+                  group-hover:bg-red-200 transition-all duration-300">
+        <span class="text-red-600 text-xl">⚠️</span>
+      </div>
+    </div>
+
+    <!-- ANIMATED COUNT -->
+    <p class="text-5xl font-extrabold text-red-600 drop-shadow-sm mt-4">
+      {{ overdue_count }}
+    </p>
   </div>
 
-  <div class="bg-white p-6 rounded shadow">
-    <h3 class="text-xl font-semibold">Goals Progress</h3>
-    <p class="text-3xl font-bold text-green-600 mt-2">0%</p>
+
+  <!-- Upcoming Tasks -->
+  <div class="group bg-white/70 backdrop-blur-xl rounded-2xl shadow-md border border-gray-200 
+              p-6 hover:shadow-xl hover:scale-[1.02] transition-all duration-300 cursor-pointer">
+
+    <div class="flex items-center justify-between">
+      <h3 class="text-sm font-semibold text-gray-500 tracking-wide">Upcoming (7 days)</h3>
+
+      <!-- ICON -->
+      <div class="w-10 h-10 flex items-center justify-center bg-orange-100 rounded-xl
+                  group-hover:bg-orange-200 transition-all duration-300">
+        <span class="text-orange-500 text-xl">📅</span>
+      </div>
+    </div>
+
+    <p class="text-5xl font-extrabold text-orange-500 drop-shadow-sm mt-4">
+      {{ upcoming_count }}
+    </p>
   </div>
 
-  <div class="bg-white p-6 rounded shadow">
-    <h3 class="text-xl font-semibold">Notes</h3>
-    <p class="text-3xl font-bold text-purple-600 mt-2">0</p>
+
+  <!-- Total Tasks -->
+  <div class="group bg-white/70 backdrop-blur-xl rounded-2xl shadow-md border border-gray-200 
+              p-6 hover:shadow-xl hover:scale-[1.02] transition-all duration-300 cursor-pointer">
+
+    <div class="flex items-center justify-between">
+      <h3 class="text-sm font-semibold text-gray-500 tracking-wide">Total Tasks</h3>
+
+      <!-- ICON -->
+      <div class="w-10 h-10 flex items-center justify-center bg-green-100 rounded-xl
+                  group-hover:bg-green-200 transition-all duration-300">
+        <span class="text-green-600 text-xl">📊</span>
+      </div>
+    </div>
+
+    <p class="text-5xl font-extrabold text-green-600 drop-shadow-sm mt-4">
+      {{ total_tasks }}
+    </p>
   </div>
 
 </div>
+
 
 {% endblock %}

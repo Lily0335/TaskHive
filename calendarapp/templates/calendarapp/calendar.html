@@ -1,0 +1,156 @@
+{% extends "dashboard/base.html" %}
+{% load static calender_tag %}
+{% load dict_get %}
+{% url 'calendarapp:calendar_month' prev_year prev_month %}
+{% url 'calendarapp:calendar_month' next_year next_month %}
+
+
+{% block title %}Calendar | TaskHive{% endblock %}
+{% block page_title %}Calendar{% endblock %}
+
+{% block content %}
+<div class="space-y-4">
+
+  <!-- Reminder Banner -->
+  {% if reminders %}
+  <div class="bg-yellow-100 border-l-4 border-yellow-400 p-3 rounded">
+    <strong class="mr-2">Reminder:</strong>
+    You have {{ reminders.count }} task(s) due within 24 hours.
+  </div>
+  {% endif %}
+
+  <!-- Top Filters -->
+  <div class="flex justify-between items-center">
+    <div class="flex gap-2">
+      <a href="{% url 'calendarapp:calendar' %}" class="px-3 py-2 bg-white border rounded">This Month</a>
+      <a href="{% url 'calendarapp:task_filter' 'today' %}" class="px-3 py-2 bg-blue-600 text-white rounded">Today</a>
+      <a href="{% url 'calendarapp:task_filter' 'week' %}" class="px-3 py-2 bg-amber-500 text-white rounded">Next 7 Days</a>
+      <a href="{% url 'calendarapp:task_filter' 'month' %}" class="px-3 py-2 bg-purple-600 text-white rounded">30 Days</a>
+    </div>
+
+    <button id="open-create" class="px-3 py-2 bg-emerald-600 text-white rounded">+ Add Event</button>
+  </div>
+
+  <!-- Month Header -->
+  <div class="flex items-center justify-between">
+    <div class="text-lg font-bold">{{ view_date|date:"F Y" }}</div>
+
+    <div class="flex gap-2">
+      <a href="{% url 'calendarapp:calendar_month' prev_year prev_month %}" 
+         class="px-3 py-1 border rounded">‹ Prev</a>
+
+      <a href="{% url 'calendarapp:calendar_month' next_year next_month %}" 
+         class="px-3 py-1 border rounded">Next ›</a>
+    </div>
+  </div>
+
+  <!-- Week Names -->
+  <div class="grid grid-cols-7 text-center font-semibold text-gray-600">
+    <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div>
+    <div>Thu</div><div>Fri</div><div>Sat</div>
+  </div>
+
+  <!-- Calendar Grid -->
+  <div class="grid grid-cols-7 gap-2">
+
+    {% for week in calendar_weeks %}
+      {% for day in week %}
+
+        {% with day_key=day|date:"Y-m-d" %}
+        {% if day_key %}
+        <!-- Clickable cell -->
+        <a href="{% url 'calendarapp:tasks_by_day' day_key %}"
+           class="block p-3 border rounded min-h-[100px] relative
+                  {% if day == today %} bg-blue-100 border-blue-500 {% endif %}
+                  {% if day.month != view_date.month %} opacity-60 {% endif %}">
+        {% else %}
+        <!-- Safe empty cell -->
+        <div class="block p-3 border rounded min-h-[100px] opacity-30">
+        {% endif %}
+
+          <!-- Day number -->
+          <div class="text-sm font-semibold">{{ day.day }}</div>
+
+          <!-- Task/Event Titles -->
+          {% with items=items_map|dict_get:day_key %}
+            {% if items %}
+              <div class="mt-2 space-y-1">
+                {% for it in items|slice:":3" %}
+                  <div class="text-xs p-1 rounded
+                       {% if it.type == 'task' %}
+                          {% if it.priority == 'High' %} bg-red-600 text-white
+                          {% elif it.priority == 'Medium' %} bg-orange-500 text-white
+                          {% else %} bg-blue-500 text-white {% endif %}
+                       {% else %}
+                          bg-slate-600 text-white
+                       {% endif %}
+                  ">
+                    {{ it.title }}
+                  </div>
+                {% endfor %}
+              </div>
+            {% endif %}
+          {% endwith %}
+
+          <!-- Dot Indicators -->
+          <div class="absolute bottom-2 left-2 flex gap-1">
+            {% with items=items_map|dict_get:day_key %}
+              {% if items %}
+                {% for it in items %}
+                  <span class="w-2 h-2 rounded-full
+                    {% if it.type == 'task' %}
+                        {% if it.priority == 'High' %} bg-red-600
+                        {% elif it.priority == 'Medium' %} bg-orange-500
+                        {% else %} bg-blue-500 {% endif %}
+                    {% else %}
+                        bg-slate-600
+                    {% endif %}
+                  "></span>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+          </div>
+
+        {% if day_key %}
+        </a>
+        {% else %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+      {% endfor %}
+    {% endfor %}
+  </div>
+
+</div>
+
+<!-- Modal -->
+<div id="create-modal" class="hidden fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-40">
+  <div class="bg-white p-6 rounded w-full max-w-md">
+    <h3 class="text-lg font-semibold mb-3">Create Event</h3>
+    <form method="post" action="{% url 'calendarapp:create_event' %}">
+      {% csrf_token %}
+      <label class="block text-sm mb-1">Title</label>
+      <input name="title" required class="w-full p-2 border rounded mb-3" />
+      <label class="block text-sm mb-1">Date</label>
+      <input type="date" name="date" required class="w-full p-2 border rounded mb-3" />
+      <label class="block text-sm mb-1">Note</label>
+      <textarea name="note" class="w-full p-2 border rounded mb-3"></textarea>
+
+      <div class="flex justify-end gap-2">
+        <button type="button" id="close-create" class="px-3 py-2 border rounded">Cancel</button>
+        <button type="submit" class="px-3 py-2 bg-emerald-600 text-white rounded">Create</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+document.getElementById("open-create").onclick = () =>
+  document.getElementById("create-modal").classList.remove("hidden");
+
+document.getElementById("close-create").onclick = () =>
+  document.getElementById("create-modal").classList.add("hidden");
+</script>
+
+{% endblock %}

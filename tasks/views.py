@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Task
 from .forms import TaskForm
 
+
 @login_required
 def task_list(request):
     # Correct field: owner instead of user

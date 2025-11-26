@@ -42,7 +42,10 @@ INSTALLED_APPS = [
     'users',
     'dashboard',
     'tasks',
- 
+    'studytracker',
+    'calendarapp',
+
+
 ]
 
 MIDDLEWARE = [

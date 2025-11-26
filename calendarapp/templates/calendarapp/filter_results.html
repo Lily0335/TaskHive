@@ -1,0 +1,21 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}{{ range }} Tasks{% endblock %}
+{% block content %}
+
+<h2 class="text-xl font-bold mb-4">{{ range }} Tasks</h2>
+
+{% if tasks %}
+  <div class="space-y-3">
+    {% for t in tasks %}
+      <div class="p-3 bg-white border rounded">
+        <div class="font-bold">{{ t.title }}</div>
+        <div class="text-sm">{{ t.priority }} — {{ t.due_date }}</div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <p>No tasks in this range.</p>
+{% endif %}
+
+{% endblock %}
