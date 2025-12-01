@@ -50,10 +50,10 @@
           Premium
         </a>
 
-        <a href="{% url 'users:logout' %}"
+        <!-- <a href="{% url 'users:logout' %}"
            class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded shadow font-semibold">
           Logout
-        </a>
+        </a> -->
       </div>
     </div>
   </nav>
@@ -82,32 +82,31 @@
        class="sidebar-link block p-3 rounded hover:bg-gray-800 flex items-center space-x-3">
        <span class="text-emerald-400 text-lg">📘</span>
        <span>Study Hours</span>
-       <span class="ml-auto bg-emerald-600 text-xs px-2 py-0.5 rounded-full text-white">NEW</span>
+       
     </a>
   </li>
 
   <!-- TASKS -->
-  <li>
-    <a href="{% url 'tasks:task_list' %}"
+  <!-- TASKS -->
+<li>
+    <a href="{% url 'tasks:home' %}"
        class="sidebar-link block p-3 rounded hover:bg-gray-800 flex items-center space-x-3">
        <span class="text-yellow-300 text-lg">📝</span>
        <span>Tasks</span>
-       <span class="ml-auto bg-red-600 text-xs px-2 py-0.5 rounded-full text-white">
-         {{ pending_tasks|default:0 }}
-       </span>
     </a>
-  </li>
+</li>
+
 
   <!-- NOTES -->
   <li>
-    <a href="#notes"
-       class="sidebar-link block p-3 rounded hover:bg-gray-800 flex items-center space-x-3">
-       <span class="text-pink-400 text-lg">📌</span>
-       <span>Notes</span>
-       <span class="ml-auto bg-blue-500 text-xs px-2 py-0.5 rounded-full text-white">
-         {{ notes_count|default:0 }}
-       </span>
+   <!-- Sticky Notes -->
+<li>
+    <a href="{% url 'sticky:wall' %}" 
+       class="flex items-center gap-3 px-4 py-2 rounded hover:bg-gray-800 transition">
+         📌<span>Sticky Notes</span>
     </a>
+</li>
+
   </li>
 
   <!-- CALENDAR -->
@@ -120,22 +119,22 @@
   </li>
 
   <!-- GOALS -->
-  <li>
+  <!-- <li>
     <a href="#goals"
        class="sidebar-link block p-3 rounded hover:bg-gray-800 flex items-center space-x-3">
        <span class="text-cyan-400 text-lg">🎯</span>
        <span>Goals</span>
     </a>
-  </li>
+  </li> -->
 
   <!-- ANALYTICS -->
-  <li>
+  <!-- <li>
     <a href="#analytics"
        class="sidebar-link block p-3 rounded hover:bg-gray-800 flex items-center space-x-3">
        <span class="text-indigo-400 text-lg">📊</span>
        <span>Analytics</span>
     </a>
-  </li>
+  </li> -->
 
 
 
@@ -143,7 +142,7 @@
   <!-- CATEGORY SECTION (New UI)       -->
   <!-- ------------------------------- -->
 
-  <div class="mt-6 text-xs text-gray-400 uppercase tracking-wide">Category</div>
+  <!-- <div class="mt-6 text-xs text-gray-400 uppercase tracking-wide">Category</div>
 
   <ul class="mt-3 space-y-2">
     <li class="flex items-center gap-3 p-2 rounded hover:bg-gray-800">
@@ -167,9 +166,7 @@
 
 
 
-  <!-- ------------------------------- -->
-  <!-- TAGS SECTION (New UI)           -->
-  <!-- ------------------------------- -->
+
 
   <div class="mt-6 text-xs text-gray-400 uppercase tracking-wide">Tags</div>
 
@@ -179,12 +176,12 @@
     <span class="px-3 py-1 rounded-full text-xs font-semibold bg-yellow-600 text-white">Python</span>
   </div>
 
-  <!-- Add tag -->
+ 
   <div class="mt-3 flex items-center gap-2">
     <input type="text" placeholder="New tag name"
            class="w-full px-2 py-1 text-sm rounded bg-gray-800 text-gray-200 border border-gray-700 focus:outline-none">
     <button class="px-3 py-1 rounded bg-gray-700 text-lg">+</button>
-  </div>
+  </div> -->
 
 
 

@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'tasks',
     'studytracker',
     'calendarapp',
+    'sticky',
 
 
 ]

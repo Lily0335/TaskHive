@@ -13,6 +13,8 @@ urlpatterns = [
     path('tasks/', include('tasks.urls')),
     path("studytracker/", include("studytracker.urls")),
     path("calendar/", include("calendarapp.urls")),
+    path("sticky/", include("sticky.urls", namespace="sticky")),
+
 
 
 

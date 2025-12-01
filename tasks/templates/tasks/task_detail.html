@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="{% static 'css/tailwind.css' %}" rel="stylesheet">
+</head>
+
+<body class="bg-slate-900 text-white p-10">
+
+<a href="{% url 'tasks:home' %}" class="text-slate-400">← Back</a>
+
+<h1 class="text-3xl font-bold mt-4 mb-2">{{ task.title }}</h1>
+
+<p class="text-slate-300 mb-4">{{ task.description }}</p>
+
+<p><strong>Priority:</strong> {{ task.get_priority_display }}</p>
+<p><strong>Due:</strong> {{ task.due_date }}</p>
+<p><strong>Repeat:</strong> {{ task.get_repeat_display }}</p>
+
+<hr class="my-6 border-slate-700">
+
+<h2 class="text-xl font-bold mb-3">Subtasks</h2>
+
+{% for st in task.subtasks.all %}
+    <div class="bg-slate-800 p-3 rounded mb-2">
+        <input type="checkbox" {% if st.completed %}checked{% endif %}>
+        {{ st.title }}
+    </div>
+{% empty %}
+    <p class="text-slate-500">No subtasks.</p>
+{% endfor %}
+
+<hr class="my-6 border-slate-700">
+
+<h2 class="text-xl font-bold mb-3">Attachments</h2>
+
+{% for a in task.attachments.all %}
+    <a href="{{ a.file.url }}" class="block bg-slate-800 p-3 rounded mb-2">
+        📄 {{ a.file.name }}
+    </a>
+{% empty %}
+    <p class="text-slate-500">No files.</p>
+{% endfor %}
+
+</body>
+</html>

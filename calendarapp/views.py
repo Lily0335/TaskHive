@@ -15,7 +15,7 @@ def build_items_map(user):
 
     # ---- TASKS ----
     for t in Task.objects.filter(owner=user):
-        if not t.due_date:      # avoid NoneType error
+        if not t.due_date:
             continue
 
         key = t.due_date.strftime("%Y-%m-%d")
@@ -39,7 +39,6 @@ def build_items_map(user):
     return items_map
 
 
-
 # ---------------------------
 # Main calendar page
 # ---------------------------
@@ -47,7 +46,6 @@ def build_items_map(user):
 def calendar_page(request, year=None, month=None):
     today = date.today()
 
-    # If no year/month -> current
     if year is None or month is None:
         year = today.year
         month = today.month
@@ -80,13 +78,12 @@ def calendar_page(request, year=None, month=None):
     # Items (tasks + events)
     items_map = build_items_map(request.user)
 
-    # ---- FIXED REMINDERS ----
+    # ---- FIXED REMINDERS (NO STATUS FIELD USED) ----
     reminders = Task.objects.filter(
         owner=request.user,
-        status="In Progress",                          # correct field
-        due_date__isnull=False,                        # avoid None
-        due_date__gte=today,                           # due today or later
-        due_date__lte=today + timedelta(days=1)        # within next 24 hours
+        due_date__isnull=False,
+        due_date__gte=today,
+        due_date__lte=today + timedelta(days=1)
     )
 
     context = {
@@ -102,7 +99,6 @@ def calendar_page(request, year=None, month=None):
     }
 
     return render(request, "calendarapp/calendar.html", context)
-
 
 
 # ---------------------------
@@ -122,7 +118,6 @@ def tasks_by_day(request, date):
     })
 
 
-
 # ---------------------------
 # Create Calendar Event
 # ---------------------------
@@ -140,7 +135,6 @@ def create_event(request):
         return redirect("calendarapp:calendar")
 
     return redirect("calendarapp:calendar")
-
 
 
 # ---------------------------

@@ -2,6 +2,13 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from datetime import date, timedelta
 from tasks.models import Task   # import your Task model
+from tasks.models import Category
+
+def home(request):
+    categories = Category.objects.all()
+    return render(request, "dashboard/home.html", {
+        "categories": categories
+    })
 
 @login_required
 def home(request):

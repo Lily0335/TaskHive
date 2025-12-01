@@ -1,0 +1,121 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+
+{% block title %}Tasks | TaskHive{% endblock %}
+
+{% block content %}
+
+<div class="flex gap-6">
+
+    <!-- LEFT SIDE: Categories -->
+    <aside class="w-64 bg-white shadow p-4 rounded-lg h-fit">
+        <h2 class="text-xl font-bold mb-4 text-gray-700">Lists</h2>
+
+        {% for c in categories %}
+            <a href="?category={{c.id}}" 
+               class="block py-2 px-3 rounded-lg mb-2 bg-gray-100 hover:bg-gray-200 text-gray-800">
+                {{ c.name }}
+            </a>
+        {% endfor %}
+
+        <hr class="my-4">
+
+        <h3 class="font-semibold mb-2 text-gray-700">Smart Lists</h3>
+
+        <a href="?auto=today" class="block py-2 hover:bg-gray-100 px-3 rounded">Today</a>
+        <a href="?auto=tomorrow" class="block py-2 hover:bg-gray-100 px-3 rounded">Tomorrow</a>
+        <a href="?auto=upcoming" class="block py-2 hover:bg-gray-100 px-3 rounded">Upcoming</a>
+        <a href="?auto=overdue" class="block py-2 hover:bg-gray-100 px-3 rounded">Overdue</a>
+    </aside>
+
+    <!-- CENTER: Task List -->
+    <main class="flex-1">
+
+        <div class="flex justify-between mb-6">
+            <form method="GET">
+                <input type="text" name="search" placeholder="Search..."
+                       class="bg-white shadow px-3 py-2 rounded-lg border border-gray-200">
+                <button class="bg-blue-600 text-white px-4 py-2 rounded-lg ml-2">Search</button>
+            </form>
+
+            <a href="{% url 'tasks:add' %}"
+               class="bg-blue-600 px-4 py-2 rounded-lg text-white shadow">
+               + Add Task
+            </a>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-4 text-gray-800">Tasks</h2>
+
+        {% for t in tasks %}
+            <div class="bg-white p-4 rounded-lg shadow mb-3 flex justify-between items-center">
+
+                <div>
+                    <input type="checkbox"
+                           onclick="location.href='{% url 'tasks:complete' t.id %}'"
+                           class="mr-2">
+
+                    <a href="{% url 'tasks:detail' t.id %}"
+                       class="font-semibold text-gray-800">
+                       {{ t.title }}
+                    </a>
+
+                    <div class="text-gray-500 text-sm mt-1">
+                        {{ t.description|truncatewords:10 }}
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+
+                    <!-- ⭐ STAR -->
+                    <a href="{% url 'tasks:star' t.id %}" class="text-2xl">
+                        {% if t.starred %}⭐{% else %}☆{% endif %}
+                    </a>
+                       <!-- EDIT -->
+    <a href="{% url 'tasks:edit_task' t.id %}"
+       class="text-blue-600 hover:text-blue-800 font-semibold">
+       Edit
+    </a>
+
+    <!-- DELETE -->
+   <form action="{% url 'tasks:delete_task' t.id %}" method="POST"
+      onsubmit="return confirm('Delete this completed task?');">
+    {% csrf_token %}
+    <button class="text-red-600 hover:text-red-800 text-sm">Delete</button>
+</form>
+
+
+
+
+                </div>
+
+            </div>
+        {% empty %}
+            <p class="text-gray-500">No tasks found.</p>
+        {% endfor %}
+
+        <hr class="my-8">
+
+        <h3 class="text-xl font-semibold mb-3 text-gray-700">Completed Tasks</h3>
+
+{% for t in completed_tasks %}
+    <div class="bg-gray-200 p-4 rounded mb-2 text-gray-700 flex justify-between items-center">
+        ✔ {{ t.title }}
+
+        <!-- Delete completed task -->
+        <form action="{% url 'tasks:delete_task' t.id %}" method="POST"
+              onsubmit="return confirm('Delete this completed task?');">
+            {% csrf_token %}
+            <button class="text-red-600 hover:text-red-800 text-sm">Delete</button>
+        </form>
+
+    </div>
+{% empty %}
+    <p class="text-gray-400">No completed tasks.</p>
+{% endfor %}
+
+
+    </main>
+
+</div>
+
+{% endblock %}

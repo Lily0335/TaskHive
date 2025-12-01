@@ -1,0 +1,89 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+
+{% block page_title %}Sticky Wall{% endblock %}
+
+{% block content %}
+<div class="flex justify-between mb-6">
+    <h1 class="text-2xl font-bold">Sticky Wall</h1>
+    <button onclick="openCreateModal()"
+        class="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700">
+        + Add Note
+    </button>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+    {% for note in notes %}
+    <div class="rounded-xl p-4 shadow-lg relative
+        {% if note.color == 'yellow' %} bg-yellow-300
+        {% elif note.color == 'red' %} bg-red-600 text-white
+        {% elif note.color == 'blue' %} bg-blue-500 text-white
+        {% elif note.color == 'green' %} bg-green-500 text-white
+        {% elif note.color == 'purple' %} bg-purple-500 text-white
+        {% else %} bg-gray-300 {% endif %}
+    ">
+
+        <div class="flex justify-between">
+            <h3 class="font-bold text-lg">{{ note.title }}</h3>
+            <div class="flex gap-2">
+                <a href="{% url 'sticky:edit' note.id %}" class="hover:opacity-75">✏️</a>
+                <a href="{% url 'sticky:delete' note.id %}" class="hover:opacity-75">🗑️</a>
+                <a href="{% url 'sticky:pin' note.id %}" class="hover:opacity-75">📌</a>
+            </div>
+        </div>
+
+        <p class="mt-3">{{ note.description|linebreaksbr }}</p>
+    </div>
+    {% endfor %}
+
+</div>
+
+<!-- Create Modal -->
+<div id="createModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-xl w-full max-w-md">
+        <h2 class="text-xl font-bold mb-3">Create Sticky Note</h2>
+
+        <form method="POST" action="{% url 'sticky:create' %}">
+            {% csrf_token %}
+
+            <label class="block font-semibold">Title</label>
+            <input name="title" class="w-full border p-2 rounded mb-3" required>
+
+            <label class="block font-semibold">Description</label>
+            <textarea name="description" class="w-full border p-2 rounded mb-3"></textarea>
+
+            <label class="block font-semibold">Color</label>
+            <select name="color" class="w-full border p-2 rounded mb-4">
+                <option value="yellow">Yellow</option>
+                <option value="red">Red</option>
+                <option value="blue">Blue</option>
+                <option value="green">Green</option>
+                <option value="purple">Purple</option>
+                <option value="gray">Gray</option>
+            </select>
+
+            <div class="flex justify-end gap-2">
+                <button type="button" onclick="closeCreateModal()"
+                    class="px-4 py-2 border rounded">
+                    Cancel
+                </button>
+
+                <button class="px-4 py-2 bg-blue-600 text-white rounded">
+                    Create
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function openCreateModal() {
+    document.getElementById("createModal").classList.remove("hidden");
+}
+function closeCreateModal() {
+    document.getElementById("createModal").classList.add("hidden");
+}
+</script>
+
+{% endblock %}

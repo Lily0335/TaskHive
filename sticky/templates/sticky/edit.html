@@ -1,0 +1,29 @@
+{% extends "dashboard/base.html" %}
+
+{% block content %}
+<div class="max-w-xl mx-auto bg-white p-6 shadow rounded-lg">
+    <h2 class="text-xl font-bold mb-4">Edit Sticky Note</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label class="block font-semibold">Title</label>
+        <input name="title" value="{{ note.title }}" class="w-full border p-2 rounded mb-3">
+
+        <label class="block font-semibold">Description</label>
+        <textarea name="description" class="w-full border p-2 rounded mb-3">{{ note.description }}</textarea>
+
+        <label class="block font-semibold">Color</label>
+        <select name="color" class="w-full border p-2 rounded mb-4">
+            <option value="yellow" {% if note.color == 'yellow' %}selected{% endif %}>Yellow</option>
+            <option value="red" {% if note.color == 'red' %}selected{% endif %}>Red</option>
+            <option value="blue" {% if note.color == 'blue' %}selected{% endif %}>Blue</option>
+            <option value="green" {% if note.color == 'green' %}selected{% endif %}>Green</option>
+            <option value="purple" {% if note.color == 'purple' %}selected{% endif %}>Purple</option>
+            <option value="gray" {% if note.color == 'gray' %}selected{% endif %}>Gray</option>
+        </select>
+
+        <button class="px-4 py-2 bg-blue-600 text-white rounded">Save</button>
+    </form>
+</div>
+{% endblock %}

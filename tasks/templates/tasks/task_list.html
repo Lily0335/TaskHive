@@ -1,65 +1,157 @@
-{% extends "dashboard/base.html" %}
-{% block title %}Tasks | TaskHive{% endblock %}
+<!-- {% extends "dashboard/base.html" %}
+{% load static %}
+
+{% block title %} My Tasks | TaskHive {% endblock %}
 
 {% block content %}
-<div class="flex justify-between items-center mb-4">
-    <h2 class="text-2xl font-bold">Tasks</h2>
-    <a href="{% url 'tasks:task_create' %}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">+ Add Task</a>
+
+<div class="max-w-4xl mx-auto">
+
+    <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold text-gray-800">My Tasks</h1>
+
+        <a href="{% url 'tasks:create_task' %}" 
+           class="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 shadow">
+            + Add Task
+        </a>
+    </div>
+
+
+    <div class="flex gap-2 mb-6 overflow-x-auto pb-2">
+        <a href="{% url 'tasks:task_list' %}"
+           class="px-4 py-1 rounded-full text-sm font-medium 
+                  {% if not request.GET.category %} bg-blue-600 text-white {% else %} bg-gray-200 {% endif %}">
+            All
+        </a>
+
+        {% for cat in categories %}
+            <a href="?category={{ cat.id }}"
+               class="px-4 py-1 rounded-full text-sm font-medium flex items-center gap-2
+                      {% if request.GET.category == cat.id|stringformat:'s' %} bg-blue-600 text-white {% else %} bg-gray-200 {% endif %}">
+                <span class="inline-block w-3 h-3 rounded-full" style="background: {{ cat.color }};"></span>
+                {{ cat.name }}
+            </a>
+        {% endfor %}
+    </div>
+
+    <div class="bg-white shadow rounded-lg p-6 mb-8">
+        <h2 class="text-lg font-semibold mb-4">To Do</h2>
+
+        {% if pending_tasks %}
+        <ul class="space-y-3">
+            {% for task in pending_tasks %}
+            <li class="flex justify-between items-start p-3 border rounded hover:bg-gray-50 transition">
+
+   
+                <div class="flex items-start gap-3 flex-1">
+                    <input type="checkbox"
+                           class="toggle-status mt-1 w-5 h-5"
+                           data-id="{{ task.id }}">
+
+                    <div>
+                        <p class="font-medium text-gray-900">{{ task.title }}</p>
+                        <p class="text-sm text-gray-500">{{ task.description }}</p>
+
+                        <div class="text-xs text-gray-600 mt-1 flex gap-3">
+                            {% if task.due_date %}
+                                <span>📅 {{ task.due_date }}</span>
+                            {% endif %}
+
+                            <span class="font-semibold">
+                                ⚡ {{ task.get_priority_display }}
+                            </span>
+
+                            {% if task.category %}
+                                <span class="px-2 py-0.5 rounded text-white"
+                                      style="background: {{ task.category.color }}">
+                                    {{ task.category.name }}
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex gap-2">
+                    <a href="{% url 'tasks:edit_task' task.id %}"
+                       class="px-3 py-1 text-sm rounded bg-yellow-400 text-white hover:bg-yellow-500">
+                        Edit
+                    </a>
+
+                    <a href="{% url 'tasks:delete_task' task.id %}"
+                       class="px-3 py-1 text-sm rounded bg-red-500 text-white hover:bg-red-600"
+                       onclick="return confirm('Delete this task?')">
+                        Delete
+                    </a>
+                </div>
+
+            </li>
+            {% endfor %}
+        </ul>
+
+        {% else %}
+            <p class="text-gray-500">No tasks pending. 🎉</p>
+        {% endif %}
+    </div>
+
+    <div class="bg-white shadow rounded-lg p-6">
+        <h2 class="text-lg font-semibold mb-4 flex justify-between items-center">
+            Completed
+            <button onclick="toggleCompleted()" 
+                    class="text-sm text-blue-600">Show/Hide</button>
+        </h2>
+
+        <ul id="completed-box" class="space-y-3 hidden">
+            {% for task in completed_tasks %}
+            <li class="p-3 border rounded bg-gray-100 line-through text-gray-500">
+                {{ task.title }}
+            </li>
+            {% empty %}
+            <p class="text-gray-500">No tasks completed yet.</p>
+            {% endfor %}
+        </ul>
+    </div>
+
 </div>
 
-<!-- Filters -->
-<form method="GET" class="flex flex-wrap gap-2 mb-4">
-    <select name="status" class="border rounded px-2 py-1">
-        <option value="">All Status</option>
-        <option value="In Progress" {% if request.GET.status == "In Progress" %}selected{% endif %}>In Progress</option>
-        <option value="Completed" {% if request.GET.status == "Completed" %}selected{% endif %}>Completed</option>
-    </select>
-    <select name="priority" class="border rounded px-2 py-1">
-        <option value="">All Priority</option>
-        <option value="Low" {% if request.GET.priority == "Low" %}selected{% endif %}>Low</option>
-        <option value="Medium" {% if request.GET.priority == "Medium" %}selected{% endif %}>Medium</option>
-        <option value="High" {% if request.GET.priority == "High" %}selected{% endif %}>High</option>
-    </select>
-    <button type="submit" class="bg-gray-200 px-3 rounded hover:bg-gray-300">Filter</button>
-</form>
+<script>
+// ---------------- CSRF TOKEN ----------------
+function getCookie(name) {
+    let cookieValue = null;
+    document.cookie.split(';').forEach(cookie => {
+        cookie = cookie.trim();
+        if (cookie.startsWith(name + '=')) {
+            cookieValue = cookie.substring(name.length + 1);
+        }
+    });
+    return cookieValue;
+}
+let csrftoken = getCookie("csrftoken");
 
-<table class="w-full bg-white rounded shadow overflow-hidden">
-    <thead class="bg-gray-100">
-        <tr>
-            <th class="p-2 text-left">Title</th>
-            <th class="p-2 text-left">Priority</th>
-            <th class="p-2 text-left">Status</th>
-            <th class="p-2 text-left">Due</th>
-            <th class="p-2 text-left">Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for task in tasks %}
-        <tr class="border-b">
-            <td class="p-2">{{ task.title }}</td>
-            <td class="p-2">{{ task.priority }}</td>
-            <td class="p-2">
-                {% if task.status == 'Completed' %}
-                    <a href="{% url 'tasks:toggle_status' task.pk %}" class="px-2 py-1 rounded bg-green-200 text-green-800">
-                        {{ task.status }}
-                    </a>
-                {% else %}
-                    <a href="{% url 'tasks:toggle_status' task.pk %}" class="px-2 py-1 rounded bg-yellow-200 text-yellow-800">
-                        {{ task.status }}
-                    </a>
-                {% endif %}
-            </td>
-            <td class="p-2">{{ task.due_date }}</td>
-            <td class="p-2 space-x-2">
-                <a href="{% url 'tasks:task_update' task.pk %}" class="text-blue-600 hover:underline">Edit</a>
-                <a href="{% url 'tasks:task_delete' task.pk %}" class="text-red-600 hover:underline">Delete</a>
-            </td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="5" class="p-2 text-center text-gray-500">No tasks found</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-{% endblock %}
+
+// ---------------- TOGGLE COMPLETED SECTION ----------------
+function toggleCompleted() {
+    document.getElementById('completed-box').classList.toggle("hidden");
+}
+
+
+// ---------------- AJAX: Toggle Task Status ----------------
+document.querySelectorAll(".toggle-status").forEach(cb => {
+    cb.addEventListener("change", function() {
+        let id = this.dataset.id;
+
+        fetch("{% url 'tasks:toggle_status' %}", {
+            method: "POST",
+            headers: { "X-CSRFToken": csrftoken },
+            body: new URLSearchParams({ task_id: id })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === "completed") {
+                this.closest("li").remove();
+            }
+        });
+    });
+});
+</script>
+
+{% endblock %} -->
